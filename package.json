@@ -1,0 +1,26 @@
+{
+  "name": "email-whatsapp-automation",
+  "version": "1.0.0",
+  "description": "Automated email monitoring with AI summaries sent to WhatsApp",
+  "main": "src/whatsapp_service.js",
+  "scripts": {
+    "start": "node src/whatsapp_service.js",
+    "init": "node src/whatsapp_init.js",
+    "test": "node src/whatsapp_test.js"
+  },
+  "keywords": [
+    "whatsapp",
+    "automation",
+    "email",
+    "gmail",
+    "ai"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "whatsapp-web.js": "^1.23.0",
+    "qrcode-terminal": "^0.12.0",
+    "express": "^4.18.2",
+    "dotenv": "^16.3.1"
+  }
+}

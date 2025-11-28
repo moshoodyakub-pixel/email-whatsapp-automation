@@ -1,0 +1,49 @@
+name: email-whatsapp-automation
+region: nyc
+
+services:
+  - name: email-whatsapp-bot
+    github:
+      repo: your-username/email-whatsapp-automation
+      branch: main
+      deploy_on_push: true
+    
+    dockerfile_path: Dockerfile
+    
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    
+    http_port: 3000
+    
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 30
+    
+    envs:
+      - key: GMAIL_CREDENTIALS_PATH
+        value: config/credentials.json
+      - key: GMAIL_TOKEN_PATH
+        value: config/token.pickle
+      - key: PUBSUB_PROJECT_ID
+        scope: RUN_TIME
+        type: SECRET
+      - key: PUBSUB_TOPIC_NAME
+        value: gmail-notifications
+      - key: PUBSUB_SUBSCRIPTION_NAME
+        value: gmail-sub
+      - key: GEMINI_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+      - key: YOUR_WHATSAPP_NUMBER
+        scope: RUN_TIME
+        type: SECRET
+      - key: WHATSAPP_SESSION_PATH
+        value: .wwebjs_auth
+      - key: PROCESS_EXISTING
+        value: "false"
+      - key: SUMMARY_LENGTH
+        value: standard
+      - key: LOG_LEVEL
+        value: INFO
+      - key: LOG_FILE
+        value: logs/app.log

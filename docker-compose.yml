@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  email-whatsapp-bot:
+    build: .
+    container_name: email-whatsapp-automation
+    restart: unless-stopped
+
+    # Mount volumes for persistent data
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+      - ./.wwebjs_auth:/app/.wwebjs_auth
+
+    # Environment variables (override with .env file)
+    env_file:
+      - ./config/.env
+
+    # Port mapping for WhatsApp service
+    ports:
+      - "3000:3000"
+
+    # Health check
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
