@@ -4,7 +4,7 @@ region: nyc
 services:
   - name: email-whatsapp-bot
     github:
-      repo: your-username/email-whatsapp-automation
+      repo: moshoodyakub-pixel/email-whatsapp-automation
       branch: main
       deploy_on_push: true
     
