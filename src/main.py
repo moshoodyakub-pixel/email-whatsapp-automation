@@ -46,40 +46,40 @@ class EmailWhatsAppBot:
             # Validate configuration
             logger.info("Validating configuration...")
             Config.validate()
-            logger.info("✅ Configuration valid")
+            logger.info("OK: Configuration valid")
             
             # Initialize AI summarizer
-            logger.info("\n📝 Initializing AI summarizer...")
+            logger.info("\n[AI] Initializing AI summarizer...")
             self.summarizer = EmailSummarizer()
             if not self.summarizer.test_connection():
                 raise Exception("Failed to connect to Gemini AI")
-            logger.info("✅ AI summarizer ready")
+            logger.info("OK: AI summarizer ready")
             
             # Initialize WhatsApp sender
-            logger.info("\n💬 Initializing WhatsApp sender...")
+            logger.info("\n[WhatsApp] Initializing WhatsApp sender...")
             self.whatsapp = WhatsAppSender()
-            logger.info("✅ WhatsApp sender ready")
+            logger.info("OK: WhatsApp sender ready")
             
             # Wait for WhatsApp service
-            logger.info("\n⏳ Waiting for WhatsApp service...")
+            logger.info("\n[System] Waiting for WhatsApp service...")
             if not self.whatsapp.wait_for_ready(timeout=120):
-                logger.error("\n❌ WhatsApp service is not ready!")
+                logger.error("\nERROR: WhatsApp service is not ready!")
                 logger.error("Please ensure:")
                 logger.error("  1. WhatsApp service is running: node src/whatsapp_service.js")
                 logger.error("  2. You have authenticated: node src/whatsapp_init.js")
                 raise Exception("WhatsApp service not ready")
-            logger.info("✅ WhatsApp service connected")
+            logger.info("OK: WhatsApp service connected")
             
             # Initialize email monitor (with callback)
-            logger.info("\n📧 Initializing email monitor...")
+            logger.info("\n[Email] Initializing email monitor...")
             self.email_monitor = EmailMonitor(
                 on_new_email_callback=self.handle_new_email
             )
             self.email_monitor.initialize()
-            logger.info("✅ Email monitor ready")
+            logger.info("OK: Email monitor ready")
             
             logger.info("\n" + "="*60)
-            logger.info("🚀 All systems initialized successfully!")
+            logger.info("All systems initialized successfully!")
             logger.info("="*60)
             logger.info(f"Summary mode: {Config.SUMMARY_LENGTH}")
             logger.info(f"Target WhatsApp: {Config.YOUR_WHATSAPP_NUMBER}")
@@ -89,7 +89,7 @@ class EmailWhatsAppBot:
             return True
             
         except Exception as e:
-            logger.error(f"\n❌ Initialization failed: {e}", exc_info=True)
+            logger.error(f"\nERROR: Initialization failed: {e}", exc_info=True)
             return False
     
     def handle_new_email(self, email_id: str, email_data: dict):
@@ -102,7 +102,7 @@ class EmailWhatsAppBot:
         """
         try:
             logger.info("\n" + "="*60)
-            logger.info(f"📨 Processing new email: {email_id}")
+            logger.info(f"[Email] Processing new email: {email_id}")
             logger.info("="*60)
             
             sender = email_data.get('sender', 'Unknown')
@@ -114,7 +114,7 @@ class EmailWhatsAppBot:
             self.stats['emails_processed'] += 1
             
             # Generate AI summary
-            logger.info("\n🤖 Generating AI summary...")
+            logger.info("\n[AI] Generating AI summary...")
             summary = self.summarizer.summarize_email(email_data)
             
             if not summary:
@@ -126,18 +126,18 @@ class EmailWhatsAppBot:
             logger.info(f"Summary: {summary[:100]}...")
             
             # Send to WhatsApp
-            logger.info("\n📱 Sending WhatsApp notification...")
+            logger.info("\n[WhatsApp] Sending WhatsApp notification...")
             success = self.whatsapp.send_email_notification(email_data, summary)
             
             if success:
                 self.stats['messages_sent'] += 1
-                logger.info("✅ Email notification sent successfully!")
+                logger.info("OK: Email notification sent successfully!")
             else:
-                logger.error("❌ Failed to send WhatsApp notification")
+                logger.error("ERROR: Failed to send WhatsApp notification")
                 self.stats['errors'] += 1
             
             # Log stats
-            logger.info("\n📊 Statistics:")
+            logger.info("\n[Stats] Statistics:")
             logger.info(f"  Emails processed: {self.stats['emails_processed']}")
             logger.info(f"  Summaries generated: {self.stats['summaries_generated']}")
             logger.info(f"  Messages sent: {self.stats['messages_sent']}")
@@ -157,17 +157,17 @@ class EmailWhatsAppBot:
         self.running = True
         
         try:
-            logger.info("🎯 Bot is now running and monitoring your inbox...")
+            logger.info("Bot is now running and monitoring your inbox...")
             logger.info("Press Ctrl+C to stop.\n")
             
             # Start email monitoring (blocks until interrupted)
             self.email_monitor.start_listening()
             
         except KeyboardInterrupt:
-            logger.info("\n\n⏹️  Received shutdown signal...")
+            logger.info("\n\n[System] Received shutdown signal...")
             self.shutdown()
         except Exception as e:
-            logger.error(f"\n❌ Fatal error: {e}", exc_info=True)
+            logger.error(f"\nERROR: Fatal error: {e}", exc_info=True)
             self.shutdown()
             return False
         
@@ -180,7 +180,7 @@ class EmailWhatsAppBot:
         
         # Log final stats
         logger.info("\n" + "="*60)
-        logger.info("📊 Final Statistics")
+        logger.info("[Stats] Final Statistics")
         logger.info("="*60)
         logger.info(f"Emails processed: {self.stats['emails_processed']}")
         logger.info(f"Summaries generated: {self.stats['summaries_generated']}")
@@ -188,7 +188,7 @@ class EmailWhatsAppBot:
         logger.info(f"Errors: {self.stats['errors']}")
         logger.info("="*60)
         
-        logger.info("\n👋 Goodbye!\n")
+        logger.info("\nGoodbye!\n")
 
 
 def main():
@@ -227,26 +227,26 @@ Before running:
         # Test configuration
         try:
             Config.validate()
-            logger.info("✅ Configuration valid\n")
+            logger.info("OK: Configuration valid\n")
         except Exception as e:
-            logger.error(f"❌ Configuration error: {e}\n")
+            logger.error(f"ERROR: Configuration error: {e}\n")
             return
         
         # Test AI
         summarizer = EmailSummarizer()
         if summarizer.test_connection():
-            logger.info("✅ Gemini AI connected\n")
+            logger.info("OK: Gemini AI connected\n")
         else:
-            logger.error("❌ Gemini AI connection failed\n")
+            logger.error("ERROR: Gemini AI connection failed\n")
         
         # Test WhatsApp
         whatsapp = WhatsAppSender()
         if whatsapp.wait_for_ready(timeout=30):
-            logger.info("✅ WhatsApp service ready\n")
+            logger.info("OK: WhatsApp service ready\n")
             if whatsapp.test_connection():
-                logger.info("✅ WhatsApp test message sent\n")
+                logger.info("OK: WhatsApp test message sent\n")
         else:
-            logger.error("❌ WhatsApp service not ready\n")
+            logger.error("ERROR: WhatsApp service not ready\n")
         
         logger.info("Test complete!")
         

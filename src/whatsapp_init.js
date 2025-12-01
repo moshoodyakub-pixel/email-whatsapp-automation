@@ -14,8 +14,8 @@ const client = new Client({
         dataPath: process.env.WHATSAPP_SESSION_PATH || '.wwebjs_auth'
     }),
     puppeteer: {
-        headless: false,  // Show browser for initial setup
-        args: ['--no-sandbox']
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
     }
 });
 

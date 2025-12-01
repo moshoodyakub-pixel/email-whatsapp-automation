@@ -34,7 +34,7 @@ class Config:
     
     # Google Gemini AI Configuration
     GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
-    GEMINI_MODEL = 'gemini-pro'
+    GEMINI_MODEL = "gemini-pro-latest"
     
     # WhatsApp Configuration
     YOUR_WHATSAPP_NUMBER = os.getenv('YOUR_WHATSAPP_NUMBER', '')
